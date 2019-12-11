@@ -27,38 +27,44 @@ func main() {
 	// fmt.Print(s)
 
 	// debug
-	if err := fs.Walk(statikFS, "/", Show); err != nil {
-		panic(err)
-	}
+	// if err := fs.Walk(statikFS, "/", Show); err != nil {
+	// 	panic(err)
+	// }
 
 	err = fs.Walk(statikFS, "/", func(path string, info os.FileInfo, err error) error {
-		fmt.Printf("やります: %s\n", info.Name())
+		//debug
+		// fmt.Printf("やります: %s\n", info.Name())
 
 		if path == "/" {
-			fmt.Println("スキップ \"/\"")
+			//debug
+			// fmt.Println("スキップ \"/\"")
 			return err
 		}
 
 		replaced_path := strings.Replace(path, "/", "", 1)
-		fmt.Println("replaced: " + replaced_path)
-		// dirpath := filepath.Join("/tmp", info.Name())
+		//debug
+		// fmt.Println("replaced: " + replaced_path)
 		dirpath := filepath.Join("/tmp", replaced_path)
 
 		// ディレクトリがなければ作る
 		if info.IsDir() {
-			fmt.Printf("IsDir(): %s\n", replaced_path)
+			//debug
+			// fmt.Printf("IsDir(): %s\n", replaced_path)
 			_, err := os.Stat(dirpath)
 			if err == nil {
-				fmt.Printf("存在した: %s\n", dirpath)
+				//debug
+				// fmt.Printf("存在した: %s\n", dirpath)
 				return err
 			} else {
-				fmt.Printf("存在しなかった: %s\n", dirpath)
+				//debug
+				// fmt.Printf("存在しなかった: %s\n", dirpath)
 				err = os.Mkdir(dirpath, 0755)
 				if err != nil {
 					log.Printf("作れませんでした: %s", dirpath)
 					return err
 				} else {
-					log.Printf("作れた: %s\n", dirpath)
+					//debug
+					// log.Printf("作れた: %s\n", dirpath)
 				}
 			}
 			return err
@@ -70,7 +76,8 @@ func main() {
 			return err
 		}
 
-		fmt.Printf("ファイルを作ります: %s\n", dirpath)
+		//debug
+		// fmt.Printf("ファイルを作ります: %s\n", dirpath)
 		err = ioutil.WriteFile(dirpath, b, 0644)
 		if err != nil {
 			log.Fatal(err)
@@ -96,10 +103,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("---------------------------")
+	//debug
+	// fmt.Println("---------------------------")
 
 	for _, finfo := range list {
-		fmt.Println(finfo.Name())
+		//debug
+		// fmt.Println(finfo.Name())
 		srcpath := filepath.Join("/tmp/docker-golang-env", finfo.Name())
 		err = os.Rename(srcpath, finfo.Name())
 		if err != nil {
