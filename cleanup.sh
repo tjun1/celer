@@ -80,3 +80,8 @@ if [ -d .emacs.d ]; then
     echo "remove .emacs.d"
     rm -rf .emacs.d
 fi
+if [ -f update-alternatives-clang-9.sh ]; then
+  echo "remove update-alternatives-clang-9.sh"
+  rm -rf update-alternatives-clang-9.sh
+fi
+
