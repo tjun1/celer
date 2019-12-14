@@ -22,6 +22,7 @@ func deploy(ltype string) {
 	langCollection := make(map[string]string)
 	langCollection["golang"] = "docker-golang-env"
 	langCollection["clang"] = "docker-clang-9-env"
+	langCollection["ruby"] = "docker-ruby-env"
 
 	var lang string
 	var langPath string
@@ -30,7 +31,9 @@ func deploy(ltype string) {
 		lang = langCollection["clang"]
 	case "golang":
 		lang = langCollection["golang"]
-		fmt.Printf("lang: %s\n", lang)
+		//fmt.Printf("lang: %s\n", lang)
+	case "ruby":
+		lang = langCollection["ruby"]
 	default:
 		flag.Usage()
 	}
@@ -135,16 +138,16 @@ func main() {
 		fmt.Printf("param -t -> %t\n", *debug)
 	}
 
-
 	switch *ltype {
 	case "golang":
 		deploy("golang")
 	case "clang":
 		deploy("clang")
+	case "ruby":
+		deploy("ruby")
 	default:
 		flag.Usage()
 	}
-
 }
 
 func Show(path string, info os.FileInfo, err error) error {
