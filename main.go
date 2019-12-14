@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -15,49 +16,54 @@ import (
 // コードジェネレータが付いている
 //go:generate statik -src=files -f
 
-func main() {
-	log.SetFlags(log.Lshortfile)
+func deploy(ltype string) {
+	//log.SetFlags(log.Lshortfile)
+
+	langCollection := make(map[string]string)
+	langCollection["golang"] = "docker-golang-env"
+	langCollection["clang"] = "docker-clang-9-env"
+
+	var lang string
+	var langPath string
+	switch ltype {
+	case "clang":
+		lang = langCollection["clang"]
+	case "golang":
+		lang = langCollection["golang"]
+		fmt.Printf("lang: %s\n", lang)
+	default:
+		flag.Usage()
+	}
+
 	statikFS, err := fs.New()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// debug
-	// s := string(b)
-	// fmt.Print(s)
-
-	// debug
-	// if err := fs.Walk(statikFS, "/", Show); err != nil {
-	// 	panic(err)
-	// }
-
 	err = fs.Walk(statikFS, "/", func(path string, info os.FileInfo, err error) error {
-		//debug
-		// fmt.Printf("やります: %s\n", info.Name())
-
 		if path == "/" {
 			//debug
 			// fmt.Println("スキップ \"/\"")
 			return err
 		}
 
-		replaced_path := strings.Replace(path, "/", "", 1)
-		//debug
-		// fmt.Println("replaced: " + replaced_path)
-		dirpath := filepath.Join("/tmp", replaced_path)
-
+		replacedPath := strings.Replace(path, "/", "", 1)
+		dirpath := filepath.Join("/tmp", replacedPath)
+		//fmt.Printf("dirpath: %s\n", dirpath)
+		if replacedPath == lang {
+			//fmt.Printf("replacedPath: %s\n", replacedPath)
+			//fmt.Printf("lang: %s\n", lang)
+			langPath = dirpath
+			//fmt.Printf("langPath: %s\n", langPath)
+		}
 		// ディレクトリがなければ作る
 		if info.IsDir() {
-			//debug
-			// fmt.Printf("IsDir(): %s\n", replaced_path)
 			_, err := os.Stat(dirpath)
 			if err == nil {
 				//debug
 				// fmt.Printf("存在した: %s\n", dirpath)
 				return err
 			} else {
-				//debug
-				// fmt.Printf("存在しなかった: %s\n", dirpath)
 				err = os.Mkdir(dirpath, 0755)
 				if err != nil {
 					log.Printf("作れませんでした: %s", dirpath)
@@ -76,8 +82,6 @@ func main() {
 			return err
 		}
 
-		//debug
-		// fmt.Printf("ファイルを作ります: %s\n", dirpath)
 		err = ioutil.WriteFile(dirpath, b, 0644)
 		if err != nil {
 			log.Fatal(err)
@@ -92,30 +96,55 @@ func main() {
 		os.Exit(1)
 	}
 
-	// err = os.Rename("/tmp/docker-golang-env", "./docker-golang-env")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	list, err := ioutil.ReadDir("/tmp/docker-golang-env")
+	// TODO: プログラミング言語の種類に対応する
+	//list, err := ioutil.ReadDir("/tmp/docker-golang-env")
+	//fmt.Println(langPath)
+	list, err := ioutil.ReadDir(langPath)
 	if err != nil {
 		log.Fatal(err)
 		os.Exit(1)
 	}
 
-	//debug
-	// fmt.Println("---------------------------")
-
 	for _, finfo := range list {
-		//debug
-		// fmt.Println(finfo.Name())
-		srcpath := filepath.Join("/tmp/docker-golang-env", finfo.Name())
-		err = os.Rename(srcpath, finfo.Name())
+		srcPath := filepath.Join(langPath, finfo.Name())
+		//fmt.Printf("srcPath: %s\n", srcPath)
+		err = os.Rename(srcPath, finfo.Name())
 		if err != nil {
 			log.Fatal(err)
 			os.Exit(1)
 		}
 	}
+
+	log.Println("...done")
+	os.Exit(0)
+}
+
+func main() {
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s <option> <value>\n\n", os.Args[0])
+		flag.PrintDefaults()
+	}
+	var (
+		ltype = flag.String("t", "golang", "Language type Choice")
+		debug = flag.Bool("debug", false, "Debug Mode enabled?")
+	)
+	flag.Parse()
+
+	if *debug {
+		fmt.Printf("param -m -> %s\n", *ltype)
+		fmt.Printf("param -t -> %t\n", *debug)
+	}
+
+
+	switch *ltype {
+	case "golang":
+		deploy("golang")
+	case "clang":
+		deploy("clang")
+	default:
+		flag.Usage()
+	}
+
 }
 
 func Show(path string, info os.FileInfo, err error) error {
