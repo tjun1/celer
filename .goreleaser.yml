@@ -1,0 +1,10 @@
+builds:
+  - main: mian.go
+    binary: celer
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+
