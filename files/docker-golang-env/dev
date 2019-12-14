@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+case $1 in
+    "build")
+        docker-compose build;;
+    "sh")
+        docker-compose build
+        docker-compose run dev bash;;
+    "emacs")
+        docker-compose build
+        docker-compose run dev emacs -nw;;
+    *)
+        docker-compose run dev bash;;
+esac

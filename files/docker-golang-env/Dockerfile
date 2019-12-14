@@ -36,7 +36,7 @@ RUN apt-get install -y \
   tzdata \
   && echo "${TZ}" > /etc/timezone \
   && rm /etc/localtime \
-  && ln -s /usr/shre/zoneinfo/Asia/Tokyo /etc/localtime \
+  && ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
   && dpkg-reconfigure -f nointeractive tzdata
 
 # Emacs
