@@ -5,7 +5,8 @@ echo "---- cleanup ----"
 
 echo "---- build & run ----"
 go generate
-go run main.go
+#go run main.go -t golang
+go run main.go -t clang
 
 echo -e "\n---- results ----"
 
