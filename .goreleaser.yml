@@ -1,5 +1,5 @@
 builds:
-  - main: mian.go
+  - main: main.go
     binary: celer
     goos:
       - windows
