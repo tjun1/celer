@@ -123,15 +123,23 @@ func deploy(ltype string) {
 }
 
 func main() {
+	const CELER_VERSION = "v0.9.2"
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s <option> <value>\n\n", os.Args[0])
 		flag.PrintDefaults()
 	}
 	var (
-		ltype = flag.String("t", "golang", "Language type Choice")
-		debug = flag.Bool("debug", false, "Debug Mode enabled?")
+		ltype   = flag.String("t", "golang", "Language type Choice")
+		debug   = flag.Bool("debug", false, "Debug Mode enabled?")
+		version = flag.Bool("v", false, "Show version")
 	)
 	flag.Parse()
+
+	if *version {
+		fmt.Println(CELER_VERSION)
+		os.Exit(0)
+	}
 
 	if *debug {
 		fmt.Printf("param -m -> %s\n", *ltype)
