@@ -55,11 +55,11 @@ if [ -f /tmp/setup.sh ]; then
     rm -rf /tmp/setup.sh
 fi
 
-
 if [ -f Dockerfile ]; then
     echo "remove Dockerfile"
     rm -rf Dockerfile
 fi
+
 if [ -f docker-compose.yml ]; then
     echo "remove docker-compose.yml "
     rm -rf docker-compose.yml
@@ -68,24 +68,33 @@ if [ -f run ]; then
     echo "remove run"
     rm -rf run
 fi
+
 if [ -f setup.sh ]; then
     echo "remove setup.sh"
     rm -rf setup.sh
 fi
+
 if [ -f dev.sh ]; then
     echo "remove dev.sh"
     rm -rf dev.sh
 fi
+
 if [ -d .emacs.d ]; then
     echo "remove .emacs.d"
     rm -rf .emacs.d
 fi
+
 if [ -f update-alternatives-clang-9.sh ]; then
   echo "remove update-alternatives-clang-9.sh"
   rm -rf update-alternatives-clang-9.sh
 fi
+
 if [ -f dev ]; then
   echo "remove dev"
   rm -rf dev
 fi
 
+if [ -f celer ]; then
+  echo "remove celer"
+  rm celer
+  fi
