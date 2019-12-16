@@ -84,4 +84,8 @@ if [ -f update-alternatives-clang-9.sh ]; then
   echo "remove update-alternatives-clang-9.sh"
   rm -rf update-alternatives-clang-9.sh
 fi
+if [ -f dev ]; then
+  echo "remove dev"
+  rm -rf dev
+fi
 
