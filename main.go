@@ -123,7 +123,7 @@ func deploy(ltype string) {
 }
 
 func main() {
-	const CELER_VERSION = "v0.9.2"
+	const CELER_VERSION = "v0.9.6"
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s <option> <value>\n\n", os.Args[0])
