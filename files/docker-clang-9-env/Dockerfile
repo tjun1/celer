@@ -28,9 +28,10 @@ RUN apt-get update && apt-get install -y \
   sqlite3 \
   libsqlite3-dev \
   rng-tools \
-
   unzip \
   tree \
+  man \
+  libncurses-dev \
   software-properties-common
 
 # timezone
@@ -63,6 +64,7 @@ RUN apt install -y \
   libc++-9-dev \
   libc++abi-9-dev \
   libclang1-9 \
+  libclang-9-dev \
   libclang-cpp9 \
   pkg-config \
   cmake \
