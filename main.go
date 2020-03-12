@@ -22,6 +22,7 @@ func deploy(ltype string) {
 	langCollection := make(map[string]string)
 	langCollection["golang"] = "docker-golang-env"
 	langCollection["clang"] = "docker-clang-9-env"
+	langCollection["gcc"] = "docker-gcc-env"
 	langCollection["ruby"] = "docker-ruby-env"
 
 	var lang string
@@ -31,9 +32,10 @@ func deploy(ltype string) {
 		lang = langCollection["clang"]
 	case "golang":
 		lang = langCollection["golang"]
-		//fmt.Printf("lang: %s\n", lang)
 	case "ruby":
 		lang = langCollection["ruby"]
+	case "gcc":
+		lang = langCollection["gcc"]
 	default:
 		flag.Usage()
 	}
@@ -45,26 +47,18 @@ func deploy(ltype string) {
 
 	err = fs.Walk(statikFS, "/", func(path string, info os.FileInfo, err error) error {
 		if path == "/" {
-			//debug
-			// fmt.Println("スキップ \"/\"")
 			return err
 		}
 
 		replacedPath := strings.Replace(path, "/", "", 1)
 		dirpath := filepath.Join("/tmp", replacedPath)
-		//fmt.Printf("dirpath: %s\n", dirpath)
 		if replacedPath == lang {
-			//fmt.Printf("replacedPath: %s\n", replacedPath)
-			//fmt.Printf("lang: %s\n", lang)
 			langPath = dirpath
-			//fmt.Printf("langPath: %s\n", langPath)
 		}
 		// ディレクトリがなければ作る
 		if info.IsDir() {
 			_, err := os.Stat(dirpath)
 			if err == nil {
-				//debug
-				// fmt.Printf("存在した: %s\n", dirpath)
 				return err
 			} else {
 				err = os.Mkdir(dirpath, 0755)
@@ -110,7 +104,6 @@ func deploy(ltype string) {
 
 	for _, finfo := range list {
 		srcPath := filepath.Join(langPath, finfo.Name())
-		//fmt.Printf("srcPath: %s\n", srcPath)
 		err = os.Rename(srcPath, finfo.Name())
 		if err != nil {
 			log.Fatal(err)
@@ -122,8 +115,13 @@ func deploy(ltype string) {
 	os.Exit(0)
 }
 
+func Show(path string, info os.FileInfo, err error) error {
+	fmt.Println(path, info.Name(), err)
+	return nil
+}
+
 func main() {
-	const CELER_VERSION = "v0.9.6"
+	const CELER_VERSION = "v0.9.7"
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s <option> <value>\n\n", os.Args[0])
@@ -153,12 +151,9 @@ func main() {
 		deploy("clang")
 	case "ruby":
 		deploy("ruby")
+	case "gcc":
+		deploy("gcc")
 	default:
 		flag.Usage()
 	}
-}
-
-func Show(path string, info os.FileInfo, err error) error {
-	fmt.Println(path, info.Name(), err)
-	return nil
 }
