@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  dev:
+    build: .
+    working_dir: /app
+    volumes:
+      - type: bind
+        source: .
+        target: /app
