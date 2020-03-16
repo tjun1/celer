@@ -24,6 +24,7 @@ func deploy(ltype string) {
 	langCollection["clang"] = "docker-clang-9-env"
 	langCollection["gcc"] = "docker-gcc-env"
 	langCollection["ruby"] = "docker-ruby-env"
+	langCollection["python"] = "docker-python-env"
 
 	var lang string
 	var langPath string
@@ -36,6 +37,8 @@ func deploy(ltype string) {
 		lang = langCollection["ruby"]
 	case "gcc":
 		lang = langCollection["gcc"]
+	case "python":
+		lang = langCollection["python"]
 	default:
 		flag.Usage()
 	}
@@ -153,6 +156,8 @@ func main() {
 		deploy("ruby")
 	case "gcc":
 		deploy("gcc")
+	case "python":
+		deploy("python")
 	default:
 		flag.Usage()
 	}
