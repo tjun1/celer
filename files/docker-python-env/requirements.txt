@@ -1,0 +1,6 @@
+jedi==0.15.2
+parso==0.6.2
+pluggy==0.13.1
+python-jsonrpc-server==0.3.4
+python-language-server==0.31.8
+ujson==1.35
