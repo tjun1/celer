@@ -124,7 +124,7 @@ func Show(path string, info os.FileInfo, err error) error {
 }
 
 func main() {
-	const CELER_VERSION = "v0.9.8"
+	const CELER_VERSION = "v0.9.9"
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s <option> <value>\n\n", os.Args[0])
@@ -132,6 +132,7 @@ func main() {
 	}
 	var (
 		ltype   = flag.String("t", "golang", "Language type Choice")
+		typeList = flag.Bool("l", false, "List language type")
 		debug   = flag.Bool("debug", false, "Debug Mode enabled?")
 		version = flag.Bool("v", false, "Show version")
 	)
@@ -139,6 +140,11 @@ func main() {
 
 	if *version {
 		fmt.Println(CELER_VERSION)
+		os.Exit(0)
+	}
+
+	if *typeList {
+		fmt.Println("golang, clang, ruby, gcc, python")
 		os.Exit(0)
 	}
 
@@ -161,4 +167,6 @@ func main() {
 	default:
 		flag.Usage()
 	}
+
+
 }
