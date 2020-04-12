@@ -4,6 +4,12 @@ MAIN := main.go
 GOMOD := go.mod
 export GO111MODULE=on
 
+.PHONY: asset
+asset:
+	go get github.com/rakyll/statik
+	statik -src=files -f
+	go generate
+
 .PHONY: build
 build: $(MAIN)
 	go generate
