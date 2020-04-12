@@ -110,6 +110,16 @@ if [ -f update-alternatives-clang-9.sh ]; then
   rm -rf update-alternatives-clang-9.sh
 fi
 
+if [ -f install-ccls.sh ]; then
+  echo "remove install-ccls.sh"
+  rm -rf install-ccls.sh
+fi
+
+if [ -f requirements.txt ]; then
+  echo "remove requirements.txt"
+  rm -rf requirements.txt
+fi
+
 if [ -f dev ]; then
   echo "remove dev"
   rm -rf dev
