@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -14,7 +13,7 @@ import (
 )
 
 // コードジェネレータが付いている
-//go:generate statik -src=files/ -f
+//go:generate statik -src=files -f
 
 func deploy(ltype string) {
 	//log.SetFlags(log.Lshortfile)
@@ -43,17 +42,6 @@ func deploy(ltype string) {
 	}
 
 	FS, err := fs.New()
-	if err != nil {
-		log.Fatal(err)
-	}
-	f, err := FS.Open(langPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	io.Copy(os.Stdout, f)
-	//fmt.Println(f)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -133,6 +121,25 @@ func deploy(ltype string) {
 
 }
 
+func Listing() {
+	//langPath := "/docker-golang-env"
+	//langPath := "/docker-clang-9-env"
+	langPath := "/docker-ruby-env"
+	//langPath := "/docker-python-env"
+	//langPath := "/docker-gcc-env"
+
+	FS, err := fs.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = fs.Walk(FS, langPath, func(path string, info os.FileInfo, err error) error {
+		fmt.Println("読みこんでいるファイル", path)
+		return nil
+	})
+	if err != nil {
+		fmt.Println("Walkできなかった")
+	}
+}
 func Show(path string, info os.FileInfo, err error) error {
 	fmt.Println(path, info.Name(), err)
 	return nil
@@ -168,6 +175,8 @@ func main() {
 	if *debug {
 		fmt.Printf("param -m -> %s\n", *ltype)
 		fmt.Printf("param -t -> %t\n", *debug)
+		Listing()
+		os.Exit(0)
 	}
 
 	switch *ltype {
