@@ -13,7 +13,7 @@ import (
 )
 
 // コードジェネレータが付いている
-//go:generate statik -src=files -f
+//go:generate statik -src=assets -include=* -f
 
 func deploy(ltype string) {
 	//log.SetFlags(log.Lshortfile)
@@ -122,9 +122,9 @@ func deploy(ltype string) {
 }
 
 func Listing() {
-	//langPath := "/docker-golang-env"
-	//langPath := "/docker-clang-9-env"
-	langPath := "/docker-ruby-env"
+	langPath := "/docker-golang-env"
+	// langPath := "/docker-clang-9-env"
+	// langPath := "/docker-ruby-env"
 	//langPath := "/docker-python-env"
 	//langPath := "/docker-gcc-env"
 
@@ -134,6 +134,7 @@ func Listing() {
 	}
 	err = fs.Walk(FS, langPath, func(path string, info os.FileInfo, err error) error {
 		fmt.Println("読みこんでいるファイル", path)
+		// fmt.Println("AAA: ", info.Name())
 		return nil
 	})
 	if err != nil {
