@@ -51,13 +51,17 @@ ADD .emacs.d /root/.emacs.d/
 # Golang
 WORKDIR /go/src/app
 ENV GO111MODULE=on
-RUN go get golang.org/x/tools/gopls@latest
-RUN go get golang.org/x/tools/cmd/goimports
-RUN go get -u github.com/go-delve/delve/cmd/dlv
+RUN go get -v \
+    golang.org/x/tools/gopls@latest \
+    golang.org/x/tools/cmd/goimports@latest \
+    github.com/go-delve/delve/cmd/dlv@latest
+
 RUN echo "export GO111MODULE=on" >> ~/.profile
 RUN echo "export PATH=$GOPATH/bin:$PATH" >> ~/.profile
 
 # Clean
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apt-get autoremove -y \
+    && apt-get clean
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 CMD ["bash"]
