@@ -141,9 +141,8 @@ func Show(path string, info os.FileInfo, err error) error {
 
 }
 
-func
-main() {
-	const CELER_VERSION = "v0.9.12"
+func main() {
+	const CELER_VERSION = "v0.9.14"
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s <option> <value>\n\n", os.Args[0])
