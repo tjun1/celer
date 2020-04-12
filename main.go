@@ -14,7 +14,7 @@ import (
 )
 
 // コードジェネレータが付いている
-//go:generate statik -src=files -f
+//go:generate statik -src=files/ -f
 
 func deploy(ltype string) {
 	//log.SetFlags(log.Lshortfile)
@@ -26,7 +26,6 @@ func deploy(ltype string) {
 	langCollection["ruby"] = "/docker-ruby-env"
 	langCollection["python"] = "/docker-python-env"
 
-	//var lang string
 	var langPath string
 	switch ltype {
 	case "clang":
@@ -61,10 +60,9 @@ func deploy(ltype string) {
 
 	err = fs.Walk(FS, langPath, func(path string, info os.FileInfo, err error) error {
 		// 宛先のディレクトリ
-
 		fmt.Println("読みこんでいるファイル", path)
 		dstPath := filepath.Join(`/tmp`, path)
-		fmt.Println("宛先のファイル", dstPath)
+		//fmt.Println("宛先のファイル", dstPath)
 
 		// path 名が langPath ならディレクトリとして作る
 		if info.IsDir() {
