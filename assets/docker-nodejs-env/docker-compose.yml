@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    build: ./node
+    # image: tjun1/node-express-dev:1.0
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./node/app/nextjs-blog:/app
+    ports:
+      - "8000:3000"
+
