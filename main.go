@@ -24,6 +24,7 @@ func deploy(ltype string) {
 	langCollection["gcc"] = "/docker-gcc-env"
 	langCollection["ruby"] = "/docker-ruby-env"
 	langCollection["python"] = "/docker-python-env"
+	langCollection["node"] = "/docker-nodejs-env"
 
 	var langPath string
 	switch ltype {
@@ -37,6 +38,8 @@ func deploy(ltype string) {
 		langPath = langCollection["gcc"]
 	case "python":
 		langPath = langCollection["python"]
+	case "node":
+		langPath = langCollection["node"]
 	default:
 		flag.Usage()
 	}
@@ -141,14 +144,14 @@ func Listing() {
 		fmt.Println("Walkできなかった")
 	}
 }
+
 func Show(path string, info os.FileInfo, err error) error {
 	fmt.Println(path, info.Name(), err)
 	return nil
-
 }
 
 func main() {
-	const CELER_VERSION = "v0.9.17"
+	const CELER_VERSION = "v0.9.18"
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s <option> <value>\n\n", os.Args[0])
@@ -169,7 +172,7 @@ func main() {
 	}
 
 	if *typeList {
-		fmt.Println("golang, clang, ruby, gcc, python")
+		fmt.Println("golang, clang, ruby, gcc, python, node")
 		os.Exit(0)
 	}
 
@@ -196,6 +199,9 @@ func main() {
 	case "python":
 		fmt.Println("python deploying")
 		deploy("python")
+	case "node":
+		fmt.Println("node deploying")
+		deploy("node")
 	default:
 		flag.Usage()
 	}
