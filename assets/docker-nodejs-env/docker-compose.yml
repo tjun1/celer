@@ -3,10 +3,11 @@ services:
   web:
     build: ./node
     # image: tjun1/node-express-dev:1.0
+    user: 1000:1000
     tty: true
     stdin_open: true
     volumes:
-      - ./node/app/nextjs-blog:/app
+      - ./node/app/:/usr/local/app
     ports:
       - "8000:3000"
 
