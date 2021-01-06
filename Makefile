@@ -30,5 +30,9 @@ clean:
 run:
 	go run $(GOFILES) -t clang
 
+.PHONY: test
+test:
+	./scripts/runtest.sh
+
 #.PHONY: setup test lint vet fmt build run
 #help
