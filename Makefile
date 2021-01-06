@@ -11,9 +11,9 @@ asset:
 	go generate
 
 .PHONY: build
-build: $(MAIN)
+build:
 	go generate
-	go build -o bin/$(NAME) $<
+	go build -o /tmp/bin/$(NAME)
 
 .PHONY: install
 install: $(MAIN)
