@@ -1,6 +1,7 @@
 NAME := celer
 #VERSION := $(shell git describe --tags --abbrev=0)
 MAIN := main.go
+GOFILES := $(shell find . -name "*.go"|grep -v statik)
 GOMOD := go.mod
 export GO111MODULE=on
 
@@ -11,9 +12,9 @@ asset:
 	go generate
 
 .PHONY: build
-build: $(MAIN)
+build:
 	go generate
-	go build -o bin/$(NAME) $<
+	go build -o /tmp/bin/$(NAME)
 
 .PHONY: install
 install: $(MAIN)
@@ -25,10 +26,13 @@ install: $(MAIN)
 clean:
 	./scripts/cleanup.sh
 
-
 .PHONY: run
-run: $(MAIN)
-	go run $<
+run:
+	go run $(GOFILES) -t clang
+
+.PHONY: test
+test:
+	./scripts/runtest.sh
 
 #.PHONY: setup test lint vet fmt build run
 #help
