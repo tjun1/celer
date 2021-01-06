@@ -124,6 +124,7 @@ func deploy(ltype string) {
 
 }
 
+// Listing はなにかやる
 func Listing() {
 	langPath := "/docker-golang-env"
 	// langPath := "/docker-clang-9-env"
@@ -145,13 +146,14 @@ func Listing() {
 	}
 }
 
+// Show はなにかやる
 func Show(path string, info os.FileInfo, err error) error {
 	fmt.Println(path, info.Name(), err)
 	return nil
 }
 
 func main() {
-	const CELER_VERSION = "v0.9.19"
+	const CelerVersion = "v0.9.20"
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s <option> <value>\n\n", os.Args[0])
@@ -167,7 +169,7 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		fmt.Println(CELER_VERSION)
+		fmt.Println(CelerVersion)
 		os.Exit(0)
 	}
 
@@ -205,5 +207,4 @@ func main() {
 	default:
 		flag.Usage()
 	}
-
 }
