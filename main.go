@@ -3,158 +3,22 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"os"
-	"path/filepath"
 
-	"github.com/rakyll/statik/fs"
 	_ "github.com/tjun1/celer/statik" // こいつが必要
 )
 
 // コードジェネレータが付いている
 //go:generate statik -src=assets -include=* -f
 
-func deploy(ltype string) {
-	//log.SetFlags(log.Lshortfile)
+const CelerVersion = "v0.9.20"
 
-	langCollection := make(map[string]string)
-	langCollection["golang"] = "/docker-golang-env"
-	langCollection["clang"] = "/docker-clang-9-env"
-	langCollection["gcc"] = "/docker-gcc-env"
-	langCollection["ruby"] = "/docker-ruby-env"
-	langCollection["python"] = "/docker-python-env"
-	langCollection["node"] = "/docker-nodejs-env"
-
-	var langPath string
-	switch ltype {
-	case "clang":
-		langPath = langCollection["clang"]
-	case "golang":
-		langPath = langCollection["golang"]
-	case "ruby":
-		langPath = langCollection["ruby"]
-	case "gcc":
-		langPath = langCollection["gcc"]
-	case "python":
-		langPath = langCollection["python"]
-	case "node":
-		langPath = langCollection["node"]
-	default:
-		flag.Usage()
-	}
-
-	FS, err := fs.New()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = fs.Walk(FS, langPath, func(path string, info os.FileInfo, err error) error {
-		// 宛先のディレクトリ
-		fmt.Println("読みこんでいるファイル", path)
-		dstPath := filepath.Join(`/tmp`, path)
-		//fmt.Println("宛先のファイル", dstPath)
-
-		// path 名が langPath ならディレクトリとして作る
-		if info.IsDir() {
-			err = os.Mkdir(dstPath, 0755)
-			if err != nil {
-				fmt.Print("ディレクトリの作成に失敗")
-				return err
-			}
-			return nil
-		}
-		// path 名がファイルなら
-		b, err := fs.ReadFile(FS, path)
-		if err != nil {
-			log.Fatal("ファイルが読み込めない")
-			log.Fatal(err)
-			return err
-		}
-		err = ioutil.WriteFile(dstPath, b, 0644)
-		if err != nil {
-			log.Fatal("ファイルの作成に失敗しています")
-			log.Fatal(err)
-			return err
-		}
-
-		return nil
-	})
-
-	// テンポラリファイルをカレントディレクトリにコピーする
-	tmpPath := filepath.Join(`/tmp`, langPath)
-	fmt.Println("テンポラリのディレクトリ", tmpPath)
-
-	fileList, err := ioutil.ReadDir(tmpPath)
-	if err != nil {
-		log.Fatal(err)
-		os.Exit(1)
-	}
-
-	cPath, err := os.Getwd()
-	if err != nil {
-		log.Fatal("カレントディレクトリが習得できない")
-		log.Fatal(err)
-		os.Exit(1)
-	}
-	for _, finfo := range fileList {
-
-		fmt.Println("finfo.Name(): ", finfo.Name())
-		tmpFile := filepath.Join(tmpPath, finfo.Name())
-		fmt.Println(tmpFile)
-		targetFile := filepath.Join(cPath, finfo.Name())
-		fmt.Println("cPath: ", cPath)
-		fmt.Println("target: ", targetFile)
-		err = os.Rename(tmpFile, targetFile)
-		if err != nil {
-			log.Fatal("リネームコピーできなかった")
-			log.Fatal(err)
-			os.Exit(1)
-		}
-	}
-
-	// 片付け
-	if err := os.RemoveAll(tmpPath); err != nil {
-		log.Fatal("片付けできなかった")
-		log.Fatal(err)
-		os.Exit(1)
-	}
-	log.Println("...done")
-	os.Exit(0)
-
-}
-
-// Listing はなにかやる
-func Listing() {
-	langPath := "/docker-golang-env"
-	// langPath := "/docker-clang-9-env"
-	// langPath := "/docker-ruby-env"
-	//langPath := "/docker-python-env"
-	//langPath := "/docker-gcc-env"
-
-	FS, err := fs.New()
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = fs.Walk(FS, langPath, func(path string, info os.FileInfo, err error) error {
-		fmt.Println("読みこんでいるファイル", path)
-		// fmt.Println("AAA: ", info.Name())
-		return nil
-	})
-	if err != nil {
-		fmt.Println("Walkできなかった")
-	}
-}
-
-// Show はなにかやる
-func Show(path string, info os.FileInfo, err error) error {
-	fmt.Println(path, info.Name(), err)
-	return nil
-}
-
+// 使い方:
+// -t オプション: 開発作業に利用するプログラミング言語を選択する
+// -l オプション: 利用できるプログラミング言語をリストする
+// -debug オプション: デバッグ情報を出力する
+// -v オプション: バージョン番号を出力する
 func main() {
-	const CelerVersion = "v0.9.20"
-
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: %s <option> <value>\n\n", os.Args[0])
 		flag.PrintDefaults()
@@ -174,6 +38,7 @@ func main() {
 	}
 
 	if *typeList {
+		// TODO: ここら辺は列挙型にでもしておくか
 		fmt.Println("golang, clang, ruby, gcc, python, node")
 		os.Exit(0)
 	}
@@ -185,26 +50,5 @@ func main() {
 		os.Exit(0)
 	}
 
-	switch *ltype {
-	case "golang":
-		fmt.Println("golang deploying...")
-		deploy("golang")
-	case "clang":
-		fmt.Println("clang deploying")
-		deploy("clang")
-	case "ruby":
-		fmt.Println("ruby deploying")
-		deploy("ruby")
-	case "gcc":
-		fmt.Println("gcc deploying")
-		deploy("gcc")
-	case "python":
-		fmt.Println("python deploying")
-		deploy("python")
-	case "node":
-		fmt.Println("node deploying")
-		deploy("node")
-	default:
-		flag.Usage()
-	}
+	deploy(string(*ltype))
 }
